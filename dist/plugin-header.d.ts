@@ -29,6 +29,12 @@ export interface PluginHeaderFields {
     network?: string;
     /** Comma-separated list of required plugin slugs */
     requiresPlugins?: string;
+    /** WordPress.org username(s) for readme.txt Contributors (falls back to author) */
+    contributors?: string;
+    /** Donate link URL for readme.txt */
+    donateLink?: string;
+    /** Comma-separated tag list for readme.txt */
+    tags?: string;
 }
 export interface PluginHeaderOptions {
     /** package.json-style object with `name`, `version`, and `wp.plugin` */

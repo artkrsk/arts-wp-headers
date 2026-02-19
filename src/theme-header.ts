@@ -27,6 +27,8 @@ export interface ThemeHeaderFields {
   domainPath?: string
   /** Update URI */
   updateUri?: string
+  /** WordPress.org username(s) for readme.txt Contributors (falls back to author) */
+  contributors?: string
 }
 
 export interface ThemeHeaderOptions {

@@ -2,6 +2,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import type { Plugin } from 'vite'
 import { buildPluginHeader } from './plugin-header.js'
+import { buildReadmeHeader, replaceReadmeHeader } from './readme-header.js'
 import { buildThemeHeader } from './theme-header.js'
 import { patchTgmVersion } from './patch-tgm.js'
 import { replacePluginFileHeader } from './replace-header.js'
@@ -36,6 +37,17 @@ function processMapping(mapping: HeaderMapping): void {
       resolve(mapping.entityDir, phpSrc, 'style.css'),
       buildThemeHeader({ pkg, slug: mapping.slug }),
     )
+
+    // readme.txt sync (theme)
+    const themeReadmePath = resolve(mapping.entityDir, phpSrc, 'readme.txt')
+    if (existsSync(themeReadmePath)) {
+      const readmeContent = readFileSync(themeReadmePath, 'utf-8')
+      const newReadmeHeader = buildReadmeHeader({ pkg, slug: mapping.slug, type: 'theme' })
+      const replacedReadme = replaceReadmeHeader(readmeContent, newReadmeHeader)
+      if (replacedReadme !== null) {
+        writeFileSync(themeReadmePath, replacedReadme)
+      }
+    }
   } else {
     if (!wp['plugin']) {
       return
@@ -56,6 +68,17 @@ function processMapping(mapping: HeaderMapping): void {
       )
       if (replaced !== null) {
         writeFileSync(pluginPhpPath, replaced)
+      }
+    }
+
+    // readme.txt sync (plugin)
+    const pluginReadmePath = resolve(mapping.entityDir, phpSrc, 'readme.txt')
+    if (existsSync(pluginReadmePath)) {
+      const readmeContent = readFileSync(pluginReadmePath, 'utf-8')
+      const newReadmeHeader = buildReadmeHeader({ pkg, slug: mapping.slug, type: 'plugin' })
+      const replacedReadme = replaceReadmeHeader(readmeContent, newReadmeHeader)
+      if (replacedReadme !== null) {
+        writeFileSync(pluginReadmePath, replacedReadme)
       }
     }
 

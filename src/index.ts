@@ -6,4 +6,7 @@ export type { PluginHeaderFields, PluginHeaderOptions } from './plugin-header.js
 
 export { replacePluginFileHeader } from './replace-header.js'
 
+export { buildReadmeHeader, replaceReadmeHeader } from './readme-header.js'
+export type { ReadmeHeaderOptions } from './readme-header.js'
+
 export { patchTgmVersion } from './patch-tgm.js'
