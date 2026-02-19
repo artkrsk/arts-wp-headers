@@ -1,9 +1,9 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { buildPluginHeader } from './plugin-header';
-import { buildThemeHeader } from './theme-header';
-import { patchTgmVersion } from './patch-tgm';
-import { replacePluginFileHeader } from './replace-header';
+import { buildPluginHeader } from './plugin-header.js';
+import { buildThemeHeader } from './theme-header.js';
+import { patchTgmVersion } from './patch-tgm.js';
+import { replacePluginFileHeader } from './replace-header.js';
 function processMapping(mapping) {
     const phpSrc = mapping.phpSrc ?? 'src/php';
     const pkgPath = resolve(mapping.entityDir, 'package.json');

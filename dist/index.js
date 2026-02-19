@@ -1,4 +1,4 @@
-export { buildThemeHeader } from './theme-header';
-export { buildPluginHeader } from './plugin-header';
-export { replacePluginFileHeader } from './replace-header';
-export { patchTgmVersion } from './patch-tgm';
+export { buildThemeHeader } from './theme-header.js';
+export { buildPluginHeader } from './plugin-header.js';
+export { replacePluginFileHeader } from './replace-header.js';
+export { patchTgmVersion } from './patch-tgm.js';
