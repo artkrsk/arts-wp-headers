@@ -59,7 +59,15 @@ Running `processMapping({ type: 'theme', slug: 'flavor', entityDir: '/path/to/th
  * Tags: blog, one-column
  */
 
-/* ---- This file is intentionally blank. Styles live in Sass source. ---- */
+html {
+  margin-top: 0 !important;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
 ```
 
 ### Plugin: `package.json` → PHP header
@@ -106,6 +114,13 @@ Running `processMapping({ type: 'plugin', slug: 'flavor-core', entityDir: '/path
  */
 
 defined( 'ABSPATH' ) || exit;
+
+define( 'FLAVOR_CORE_VERSION', '1.0.0' );
+define( 'FLAVOR_CORE_PATH', plugin_dir_path( __FILE__ ) );
+
+require_once FLAVOR_CORE_PATH . 'inc/class-flavor-core.php';
+
+load_plugin_textdomain( 'flavor-core', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 ```
 
 ### TGM version patching
