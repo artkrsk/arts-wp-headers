@@ -12,6 +12,8 @@ Produces:
 - **readme.txt** header blocks (`=== Name ===` format for WordPress.org)
 - **TGM version patches** (updates version strings inside TGM-style PHP plugin arrays)
 
+The Vite plugin (`@artemsemkin/vite-plugin-wp-headers`) is a separate, generic package that handles lifecycle timing only. It accepts `{ generate(), watch? }` and knows nothing about wp-headers. Composition happens in the consumer's build config.
+
 ## Commands
 
 ```bash
