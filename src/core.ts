@@ -34,6 +34,7 @@ export function replaceComment(content: string, newComment: string): string | nu
 
 /** Replace the `=== ... ===` header block in content. Returns `null` if not found. */
 export function replaceReadmeBlock(content: string, newBlock: string): string | null {
+  content = content.replace(/\r\n/g, '\n')
   const lines = content.split('\n')
 
   const titleIdx = lines.findIndex((l) => /^===\s+.+\s+===$/.test(l))

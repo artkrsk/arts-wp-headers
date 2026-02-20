@@ -183,6 +183,16 @@ describe('replaceReadmeBlock', () => {
     expect(replaceReadmeBlock(content, '=== Test ===\n\n')).toBeNull()
   })
 
+  it('handles CRLF line endings', () => {
+    const content = "=== My Plugin ===\r\nStable tag: 1.0.0\r\n\r\n== Description ==\r\n\r\nContent.\r\n"
+    const newBlock = "=== My Plugin ===\n\nStable tag: 2.0.0\n\n"
+    const result = replaceReadmeBlock(content, newBlock)
+
+    expect(result).toContain('Stable tag: 2.0.0')
+    expect(result).toContain('== Description ==')
+    expect(result).not.toContain('Stable tag: 1.0.0')
+  })
+
   it('handles extra blank lines between header and content', () => {
     const content = `=== My Plugin ===\nStable tag: 1.0.0\n\n\n\nA short description.\n\n== Description ==\n\nContent.\n`
     const newBlock = `=== My Plugin ===\n\nStable tag: 2.0.0\n\n`

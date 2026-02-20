@@ -4,13 +4,17 @@ import { buildComment, buildReadmeBlock, replaceComment, replaceReadmeBlock } fr
 import { patchTgmVersion } from './patch-tgm.js';
 import { themeStyleFromPkg, themeReadmeFromPkg, wpThemeStyle, wpThemeReadme } from './wp-theme.js';
 import { pluginHeaderFromPkg, pluginReadmeFromPkg, wpPluginHeader, wpPluginReadme } from './wp-plugin.js';
+/** Read a UTF-8 file, stripping BOM if present */
+function readText(filePath) {
+    return readFileSync(filePath, 'utf-8').replace(/^\uFEFF/, '');
+}
 function processMapping(mapping) {
     const phpSrc = mapping.phpSrc ?? 'src/php';
     const pkgPath = resolve(mapping.entityDir, 'package.json');
     if (!existsSync(pkgPath)) {
         return;
     }
-    const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+    const pkg = JSON.parse(readText(pkgPath));
     const wp = pkg['wp'] ?? {};
     if (mapping.type === 'theme') {
         if (!wp['theme']) {
@@ -22,13 +26,10 @@ function processMapping(mapping) {
         // readme.txt
         const themeReadmePath = resolve(mapping.entityDir, phpSrc, 'readme.txt');
         if (existsSync(themeReadmePath)) {
-            const readmeContent = readFileSync(themeReadmePath, 'utf-8');
+            const readmeContent = readText(themeReadmePath);
             const readmeConfig = themeReadmeFromPkg(pkg, mapping.slug);
             const block = buildReadmeBlock(readmeConfig.name, wpThemeReadme(readmeConfig));
-            const replaced = replaceReadmeBlock(readmeContent, block);
-            if (replaced !== null) {
-                writeFileSync(themeReadmePath, replaced);
-            }
+            writeFileSync(themeReadmePath, replaceReadmeBlock(readmeContent, block) ?? block + readmeContent);
         }
     }
     else {
@@ -39,7 +40,7 @@ function processMapping(mapping) {
         // Plugin PHP header
         const pluginPhpPath = resolve(mapping.entityDir, phpSrc, `${mapping.slug}.php`);
         if (existsSync(pluginPhpPath)) {
-            const content = readFileSync(pluginPhpPath, 'utf-8');
+            const content = readText(pluginPhpPath);
             const headerConfig = pluginHeaderFromPkg(pkg, mapping.slug);
             const comment = buildComment(wpPluginHeader(headerConfig));
             const replaced = replaceComment(content, comment);
@@ -47,17 +48,18 @@ function processMapping(mapping) {
                 const normalized = replaced.replace(/^\s*<\?(?:php|PHP)?\s*/, '');
                 writeFileSync(pluginPhpPath, `<?php\n${normalized.trimStart()}`);
             }
+            else {
+                const stripped = content.replace(/^\s*<\?(?:php|PHP)?\s*/, '');
+                writeFileSync(pluginPhpPath, `<?php\n${comment}\n${stripped.trimStart()}`);
+            }
         }
         // readme.txt
         const pluginReadmePath = resolve(mapping.entityDir, phpSrc, 'readme.txt');
         if (existsSync(pluginReadmePath)) {
-            const readmeContent = readFileSync(pluginReadmePath, 'utf-8');
+            const readmeContent = readText(pluginReadmePath);
             const readmeConfig = pluginReadmeFromPkg(pkg, mapping.slug);
             const block = buildReadmeBlock(readmeConfig.name, wpPluginReadme(readmeConfig));
-            const replaced = replaceReadmeBlock(readmeContent, block);
-            if (replaced !== null) {
-                writeFileSync(pluginReadmePath, replaced);
-            }
+            writeFileSync(pluginReadmePath, replaceReadmeBlock(readmeContent, block) ?? block + readmeContent);
         }
         // TGM version patching
         const pluginWp = wp['plugin'];
@@ -65,7 +67,7 @@ function processMapping(mapping) {
         if (loadPluginsFile && mapping.tgmBasePath) {
             const tgmFilePath = resolve(mapping.tgmBasePath, loadPluginsFile);
             if (existsSync(tgmFilePath)) {
-                const tgmContent = readFileSync(tgmFilePath, 'utf-8');
+                const tgmContent = readText(tgmFilePath);
                 const patched = patchTgmVersion(tgmContent, mapping.slug, version);
                 if (patched !== tgmContent) {
                     writeFileSync(tgmFilePath, patched);
