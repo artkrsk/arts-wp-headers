@@ -7,8 +7,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 A TypeScript library (`@artemsemkin/wp-headers`) that generates and patches WordPress file headers. Layered architecture separates pure string I/O from WordPress conventions.
 
 Produces:
-- **style.css** theme headers (WordPress `class-wp-theme.php` field order)
-- **Plugin PHP** file headers (`get_plugin_data()` field order)
+- **style.css** theme headers (parsed by WordPress `class-wp-theme.php`)
+- **Plugin PHP** file headers (parsed by `get_plugin_data()`)
 - **readme.txt** header blocks (`=== Name ===` format for WordPress.org)
 - **TGM version patches** (updates version strings inside TGM-style PHP plugin arrays)
 
@@ -30,7 +30,7 @@ pnpm vitest run tests/core.test.ts
 
 ## Architecture
 
-ESM-only (`"type": "module"`). Single export path: `.` -> `dist/index.ts`.
+ESM-only (`"type": "module"`). Single export path: `.` -> `dist/index.js`.
 
 Three-layer architecture:
 
